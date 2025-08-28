@@ -4,8 +4,8 @@ from utils.Node import Node
 import matplotlib.pyplot as plt
 from utils.Utilize import Utilize
 
-#Aktif Kullanılan Bi Direction Apf RRT Star
-class OneWayAPFRRT:
+#Active Bi-Directional APF RRT Star
+class BiDAfpRRTStar:
     ultz = Utilize()
     def __init__(self, stepSize, iteration, startPoint, targetPoint, obstacleList, momentOfBreak, lowLimit, maxLimit,
                  searchRadius=2.0, ka=1.0, kr=100.0, p0=15.0):
@@ -29,11 +29,11 @@ class OneWayAPFRRT:
         self.path = []
 
     def distance(self, node1, node2):
-        """İki düğüm arasındaki mesafeyi hesaplar"""
+        """Calculates the distance between two nodes"""
         return np.sqrt((node1.x - node2.x)**2 + (node1.y - node2.y)**2)
 
     def sample(self):
-        """Hedef yönelimli rastgele örnekleme."""
+        """Target-oriented random sampling."""
         if np.random.random() > 0.1:  # %80 rastgele, %20 hedefe yönelim
             x = np.random.uniform(self.lowLimit[0], self.maxLimit[0]) #(self.bounds[0], self.bounds[1])
             y = np.random.uniform(self.lowLimit[1], self.maxLimit[1]) #(self.bounds[0], self.bounds[1])
@@ -42,12 +42,12 @@ class OneWayAPFRRT:
             return self.targetPoint
 
     def nearest(self, point, tree):
-        """En yakın düğümü bul."""
+        """Find the nearest node."""
         distances = [self.distance(node, point) for node in tree]
         return tree[np.argmin(distances)]
 
     def steer(self, from_node, to_node):
-        """Yönlendirme fonksiyonu."""
+        """Redirection function."""
         dx = to_node.x - from_node.x
         dy = to_node.y - from_node.y
         theta = np.arctan2(dy, dx)
@@ -57,7 +57,7 @@ class OneWayAPFRRT:
         new_node.parent = from_node
         new_node.cost = from_node.cost + self.stepSize
         return new_node
-    ############################################En Son Bakılacak###########################
+
     def potential_field(self, node, target):
         # Attractive force towards the goal
         ka = 1.0  # Attractive gain
@@ -98,12 +98,12 @@ class OneWayAPFRRT:
         return Node(np.array([node.x + force[0], node.y + force[1]]))
     
     def apf(self, nearest_node, new_node):
-        """Yapay potansiyel alan (APF) ile düğüm iyileştirme."""
-        # Çekim kuvveti (hedefe doğru)
+        """Node improvement with artificial potential field (APF)."""
+        # Attraction force (towards the target)
         F_att = np.array([self.goal.x - nearest_node.x, self.goal.y - nearest_node.y])
         F_att = self.ka * F_att / np.linalg.norm(F_att)
 
-        # İtme kuvveti (engellerden kaçınma)
+        # Thrust force (avoidance of obstacles)
         F_rep = np.zeros(2)
         for obs in self.obstacleList:
             obs_x, obs_y, obs_r = obs
@@ -113,11 +113,11 @@ class OneWayAPFRRT:
                 direction = np.array([nearest_node.x - obs_x, nearest_node.y - obs_y]) / d
                 F_rep += rep_force * direction
 
-        # Toplam kuvvet
+        # Total force
         F_total = F_att + F_rep
         F_total = F_total / np.linalg.norm(F_total)  # Birim vektör
 
-        # Yeni düğüm pozisyonu
+        # New node position
         new_x = nearest_node.x + self.step_size * F_total[0]
         new_y = nearest_node.y + self.step_size * F_total[1]
         improved_node = Node(new_x, new_y)
@@ -126,10 +126,10 @@ class OneWayAPFRRT:
         return improved_node
 
     def find_near_nodes(self, new_node, tree):
-        # Yarı çap dinamik olarak hesaplayan bir kod. Duruma göre açılacak.
+        # A code that dynamically calculates the radius. It will open depending on the situation.
         numberOfNode = len(tree)
         self.searchRadius = 50 * np.sqrt((np.log(numberOfNode) / numberOfNode))
-        """Belirli bir yarıçap içindeki düğümleri bulur"""
+        """Finds nodes within a specified radius"""
         near_nodes = []
         for node in tree:
             if self.distance(new_node, node) <= self.searchRadius:
@@ -137,18 +137,18 @@ class OneWayAPFRRT:
         return near_nodes
 
     def rewire(self, new_node, near_nodes):
-        """Yakındaki düğümleri yeniden bağlar"""
+        """Rebinds nearby nodes"""
         for near_node in near_nodes:
             potential_cost = (new_node.cost +
                             self.distance(new_node, near_node))
 
             if (potential_cost < near_node.cost and not self.ultz.checkCollision(near_node, new_node, self.stepSize, self.obstacleList)):
-                #self.is_collision_free(new_node, near_node)):############Collision Güncellenecek##################
+                #self.is_collision_free(new_node, near_node)):############Collision to be updated##################
                 near_node.parent = new_node
                 near_node.cost = potential_cost
 
     def is_collision_free(self, node1, node2):
-        """Çarpışma kontrolü."""
+        """Collision control."""
         for obs in self.obstacleList:
             obs_x, obs_y, obs_r = obs
             for t in np.linspace(0, 1, 10):
@@ -159,17 +159,17 @@ class OneWayAPFRRT:
         return True
 
     def connect_trees(self, tree1, tree2):
-        """İki ağacı birleştirmeye çalışır"""
+        """Trying to join two trees together"""
         for node1 in tree1:
             for node2 in tree2:
                 if (self.distance(node1, node2) < self.momentOfBreak and
                     not self.ultz.checkCollision(node1, node2, self.stepSize, self.obstacleList)):
-                     #self.is_collision_free(node1, node2)):############Collision Güncellenecek##################
+                     #self.is_collision_free(node1, node2)):############Collision to be updated##################
                     return node1, node2
         return None, None
     
     def construct_path(self, connect_node1, connect_node2):
-        """Bulunan yolu oluşturur"""
+        """Creates the found path"""
         path = []
         current = connect_node1
         while current is not None:
@@ -184,7 +184,7 @@ class OneWayAPFRRT:
         return np.array(path)
 
     def run(self):
-        """Ana planlama fonksiyonu."""
+        """Primary planning function."""
         startTime = time.time()
         path, nodeCount = [], 1
         for _ in range(self.iteration):
@@ -194,7 +194,7 @@ class OneWayAPFRRT:
             improved_node = self.apply_potential_field(nearest_start, rand_node) #self.apf(nearest_node, new_node)
 
             if not self.ultz.checkCollision(nearest_start, improved_node, self.stepSize, self.obstacleList):
-              #self.is_collision_free(nearest_start, improved_node):############Collision Güncellenecek##################
+              #self.is_collision_free(nearest_start, improved_node):
               improved_node.parent = nearest_start
               near_nodes_start = self.find_near_nodes(improved_node, self.start_tree)
               self.start_tree.append(improved_node)
@@ -209,7 +209,7 @@ class OneWayAPFRRT:
               #???
               nodeCount += 1
               if not self.ultz.checkCollision(nearest_target, new_node_target, self.stepSize, self.obstacleList):
-                  #self.is_collision_free(nearest_target, improved_node_target):############Collision Güncellenecek##################
+                  #self.is_collision_free(nearest_target, improved_node_target):
                   new_node_target.parent = nearest_target
                   near_nodes_target = self.find_near_nodes(new_node_target, self.target_tree)
                   self.target_tree.append(new_node_target)
@@ -234,7 +234,7 @@ class OneWayAPFRRT:
         return path, nodeCount, endTime - startTime
 
     def get_path(self):
-        """Bulunan yolu oluştur."""
+       
         path = []
         current = self.goal
         while current is not None:
@@ -243,7 +243,7 @@ class OneWayAPFRRT:
         return path[::-1]
 
     def plot(self, path=None):
-        """Sonuçları görselleştir."""
+        """Visualise the results."""
         plt.figure(figsize=(10, 10))
         for obs in self.obstacleList:
             circle = plt.Circle((obs[0], obs[1]), obs[2], color='red', alpha=0.5)
@@ -278,8 +278,8 @@ if __name__ == "__main__":
     (start, goal, obstacleList, bounds)
     path = planner.plan()
     if len(path) > 0:
-        print("Yol bulundu!")
+        print("The way has been found!")
         planner.plot(path)
     else:
-        print("Yol bulunamadı!")
+        print("The route could not be found!")
 '''
