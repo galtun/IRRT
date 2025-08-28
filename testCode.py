@@ -3,10 +3,9 @@ import pandas as pd
 from algorithms.IRRT import IRRT
 from algorithms.RRT import RRT
 from algorithms.RRTStar import RRTStar
-#from algorithms.RRTBiDirection import RRTBiDirection
 from algorithms.RRTConnect import RRTConnect
 from algorithms.AFPRRT import APFRRT
-from algorithms.BiDAfpRRTStar import OneWayAPFRRT
+from algorithms.BiDAfpRRTStar import BiDAfpRRTStar
 from utils.Environment import Environment
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches   
@@ -35,31 +34,27 @@ for _ in range(loopNumber):
     '''
     alg1 = RRT(stepSize=15, iteration=18000, startPoint= start, targetPoint= target, obstacleList= obsList, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
     path1, df.loc[_, 'RRT-Node'], df.loc[_, 'RRT-Time'] = alg1.run()
-    print('RRT tamamlandi')
+    print('RRT completed')
 
     alg2 = RRTStar(stepSize=15, iteration=5000, startPoint= start, targetPoint= target, obstacleList= obsList, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
     path2, df.loc[_,'RRTStar-Node'], df.loc[_,'RRTStar-Time'] = alg2.run()
-    print('RRTStar tamamlandi')
+    print('RRTStar completed')
     '''
     alg3 = IRRT(stepSize=15, iteration=18000, startPoint= start, targetPoint= target, obstacleList= obsList, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
     path3, df.loc[_,'IRRT-Node'], df.loc[_,'IRRT-Time'] = alg3.run()
-    print('IRRT tamamlandi')
+    print('IRRT completed')
     '''
     alg4 = RRTConnect(stepSize=15, iteration=5000, startPoint= start, targetPoint= target, obstacleList= obsList, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
     path4, df.loc[_,'RRTConnect-Node'], df.loc[_,'RRTConnect-Time'] = alg4.run()
-    print('RRTConnect tamamlandi')
+    print('RRTConnect completed')
 
     alg5 = APFRRT(stepSize = 15, iteration = 8000, startPoint = start, targetPoint = target, obstacleList = obsList, momentOfBreak = momentOfBreak, lowLimit = lowLimit, maxLimit = maxLimit, targetBias = 0.1)
     path5, df.loc[_,'AFPRRT-Node'], df.loc[_,'AFPRRT-Time'] = alg5.run()
-    print('AFPRRT tamamlandi')
+    print('AFPRRT completed')
 
-    alg6 = BiDirectionApfRRTStar(stepSize = 15, iteration = 18000, startPoint = start, targetPoint = target, obstacleList = obsList, momentOfBreak = momentOfBreak, lowLimit = lowLimit, maxLimit = maxLimit, targetBias = 0.1)
+    alg6 = BiDAfpRRTStar(stepSize = 15, iteration = 18000, startPoint = start, targetPoint = target, obstacleList = obsList, momentOfBreak = momentOfBreak, lowLimit = lowLimit, maxLimit = maxLimit, searchRadius=2.0, ka=1.0, kr=100.0, p0=15.0)
     path6, df.loc[_,'BiAFPRRT-Node'], df.loc[_,'BiAFPRRT-Time'] = alg6.run()
-    print('BiAFPRRT tamamlandi')
-
-    alg6 = OneWayAPFRRT(stepSize = 15, iteration = 18000, startPoint = start, targetPoint = target, obstacleList = obsList, momentOfBreak = momentOfBreak, lowLimit = lowLimit, maxLimit = maxLimit, searchRadius=2.0, ka=1.0, kr=100.0, p0=15.0)
-    path6, df.loc[_,'BiAFPRRT-Node'], df.loc[_,'BiAFPRRT-Time'] = alg6.run()
-    print('BiAFPRRT tamamlandi')
+    print('BiAFPRRT completed')
 
     pathDist = 0
     for i in range(len(path1)-1):
@@ -109,15 +104,6 @@ for _ in range(loopNumber):
     pathDist = 0
     for i in range(len(path6)-1):
         pathDist += alg6.distance(path6[i], path6[i+1])
-        plt.plot([path6[i].x, path6[i+1].x], [path6[i].y, path6[i+1].y], 'r-')
-    df.loc[_,'BiAFPRRT-Dist'] = pathDist
-    print(str(_),'-BiAFPRRT   \t| Node:',str(df['BiAFPRRT-Node'][_]), '\t\t| Time:', str(df['BiAFPRRT-Time'][_]), '\t\t| Dist:', str(pathDist))
-    if path6:
-        plt.plot([path6[0].x, path6[1].x], [path6[0].y, path6[1].y], 'r-', label='BiAFPRRT')
-
-    pathDist = 0
-    for i in range(len(path6)-1):
-        pathDist += alg6.distance(path6[i], path6[i+1])
         plt.plot([path6[i].x, path6[i+1].x], [path6[i].y, path6[i+1].y], 'orange')
     df.loc[_,'BiAFPRRT-Dist'] = pathDist
     print(str(_),'-BiAFPRRT   \t| Node:',str(df['BiAFPRRT-Node'][_]), '\t\t| Time:', str(df['BiAFPRRT-Time'][_]), '\t\t| Dist:', str(pathDist))
@@ -125,26 +111,26 @@ for _ in range(loopNumber):
         plt.plot([path6[0].x, path6[1].x], [path6[0].y, path6[1].y], 'orange', label='BiAFPRRT')
     '''
     plt.scatter(start.x, start.y, color='green', marker='o')
-    plt.text(start.x, start.y, 'Başlangıç', ha='center')
+    plt.text(start.x, start.y, 'Start', ha='center')
     plt.scatter(target.x, target.y, color='red', marker='x')
-    plt.text(target.x, target.y, 'Hedef', ha='center')
+    plt.text(target.x, target.y, 'Target', ha='center')
     plt.legend()
-    plt.xlabel('X Ekseni')
-    plt.ylabel('Y Ekseni')
+    plt.xlabel('X axis')
+    plt.ylabel('Y axis')
 print(f'===================={name}====================')
-print(str(loopNumber),'Ortalama RRT        \t| Node:',str(df['RRT-Node'].mean()), '\t| Time:', str(df['RRT-Time'].mean()), '\t| Dist:', str(df['RRT-Dist'].mean()))
-print(str(loopNumber),'Ortalama RRTStar    \t| Node:',str(df['RRTStar-Node'].mean()), '\t| Time:', str(df['RRTStar-Time'].mean()), '\t| Dist:', str(df['RRTStar-Dist'].mean()))
-print(str(loopNumber),'Ortalama IRRT       \t| Node:',str(df['IRRT-Node'].mean()), '\t| Time:', str(df['IRRT-Time'].mean()), '\t| Dist:', str(df['IRRT-Dist'].mean()))
-print(str(loopNumber),'Ortalama RRTConnect \t| Node:',str(df['RRTConnect-Node'].mean()), '\t| Time:', str(df['RRTConnect-Time'].mean()), '\t| Dist:', str(df['RRTConnect-Dist'].mean()))
-print(str(loopNumber),'Ortalama APFRRT     \t| Node:',str(df['AFPRRT-Node'].mean()), '\t| Time:', str(df['AFPRRT-Time'].mean()), '\t| Dist:', str(df['AFPRRT-Dist'].mean()))
-print(str(loopNumber),'Ortalama BiAFPRRT     \t| Node:',str(df['BiAFPRRT-Node'].mean()), '\t| Time:', str(df['BiAFPRRT-Time'].mean()), '\t| Dist:', str(df['BiAFPRRT-Dist'].mean()))
+print(str(loopNumber),'Average RRT        \t| Node:',str(df['RRT-Node'].mean()), '\t| Time:', str(df['RRT-Time'].mean()), '\t| Dist:', str(df['RRT-Dist'].mean()))
+print(str(loopNumber),'Average RRTStar    \t| Node:',str(df['RRTStar-Node'].mean()), '\t| Time:', str(df['RRTStar-Time'].mean()), '\t| Dist:', str(df['RRTStar-Dist'].mean()))
+print(str(loopNumber),'Average IRRT       \t| Node:',str(df['IRRT-Node'].mean()), '\t| Time:', str(df['IRRT-Time'].mean()), '\t| Dist:', str(df['IRRT-Dist'].mean()))
+print(str(loopNumber),'Average RRTConnect \t| Node:',str(df['RRTConnect-Node'].mean()), '\t| Time:', str(df['RRTConnect-Time'].mean()), '\t| Dist:', str(df['RRTConnect-Dist'].mean()))
+print(str(loopNumber),'Average APFRRT     \t| Node:',str(df['AFPRRT-Node'].mean()), '\t| Time:', str(df['AFPRRT-Time'].mean()), '\t| Dist:', str(df['AFPRRT-Dist'].mean()))
+print(str(loopNumber),'Average BiAFPRRT     \t| Node:',str(df['BiAFPRRT-Node'].mean()), '\t| Time:', str(df['BiAFPRRT-Time'].mean()), '\t| Dist:', str(df['BiAFPRRT-Dist'].mean()))
 
-print(str(loopNumber),'Standart Sap RRT        \t| Node:',str(df['RRT-Node'].std()), '\t| Time:', str(df['RRT-Time'].std()), '\t| Dist:', str(df['RRT-Dist'].std()))
-print(str(loopNumber),'Standart Sap RRTStar    \t| Node:',str(df['RRTStar-Node'].std()), '\t| Time:', str(df['RRTStar-Time'].std()), '\t| Dist:', str(df['RRTStar-Dist'].std()))
-print(str(loopNumber),'Standart Sap IRRT       \t| Node:',str(df['IRRT-Node'].std()), '\t| Time:', str(df['IRRT-Time'].std()), '\t| Dist:', str(df['IRRT-Dist'].std()))
-print(str(loopNumber),'Standart Sap RRTConnect \t| Node:',str(df['RRTConnect-Node'].std()), '\t| Time:', str(df['RRTConnect-Time'].std()), '\t| Dist:', str(df['RRTConnect-Dist'].std()))
-print(str(loopNumber),'Standart Sap APFRRT     \t| Node:',str(df['AFPRRT-Node'].std()), '\t| Time:', str(df['AFPRRT-Time'].std()), '\t| Dist:', str(df['AFPRRT-Dist'].std()))
-print(str(loopNumber),'Standart Sap BiAFPRRT     \t| Node:',str(df['BiAFPRRT-Node'].std()), '\t| Time:', str(df['BiAFPRRT-Time'].std()), '\t| Dist:', str(df['BiAFPRRT-Dist'].std()))
+print(str(loopNumber),'Standard Deviation RRT        \t| Node:',str(df['RRT-Node'].std()), '\t| Time:', str(df['RRT-Time'].std()), '\t| Dist:', str(df['RRT-Dist'].std()))
+print(str(loopNumber),'Standard Deviation RRTStar    \t| Node:',str(df['RRTStar-Node'].std()), '\t| Time:', str(df['RRTStar-Time'].std()), '\t| Dist:', str(df['RRTStar-Dist'].std()))
+print(str(loopNumber),'Standard Deviation IRRT       \t| Node:',str(df['IRRT-Node'].std()), '\t| Time:', str(df['IRRT-Time'].std()), '\t| Dist:', str(df['IRRT-Dist'].std()))
+print(str(loopNumber),'Standard Deviation RRTConnect \t| Node:',str(df['RRTConnect-Node'].std()), '\t| Time:', str(df['RRTConnect-Time'].std()), '\t| Dist:', str(df['RRTConnect-Dist'].std()))
+print(str(loopNumber),'Standard Deviation APFRRT     \t| Node:',str(df['AFPRRT-Node'].std()), '\t| Time:', str(df['AFPRRT-Time'].std()), '\t| Dist:', str(df['AFPRRT-Dist'].std()))
+print(str(loopNumber),'Standard Deviation BiAFPRRT     \t| Node:',str(df['BiAFPRRT-Node'].std()), '\t| Time:', str(df['BiAFPRRT-Time'].std()), '\t| Dist:', str(df['BiAFPRRT-Dist'].std()))
 
 #df.to_excel("output.xlsx", index=False)  
 #plt.plot(x, y1, label='Line 1')
