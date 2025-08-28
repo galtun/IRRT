@@ -37,7 +37,7 @@ class BiDirectionApfRRTStar:
     def nearest(self, node, tree):
         return min(tree, key=lambda n: self.distance(n, node))
     
-    # Kullanilmamis
+
     def steer(self, from_node, to_node):
         dist = self.distance(from_node, to_node)
         if dist < self.stepSize:
