@@ -133,7 +133,7 @@ def chcekEviroment(clouds):
                             obstacleList= realClouds, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
                     path = []
                     path, nodeCount3, completedTime3 = alg3.run()
-                    print('İşlem Zamani : %f - Yol Uzunluğu : %f - Manevra Sayısı : %d' % (completedTime3, utz.calculatePathDistance(path=path), len(path)-1))
+                    print('Processing Time : %f - Road Length : %f - Number of Maneuvers : %d' % (completedTime3, utz.calculatePathDistance(path=path), len(path)-1))
                     for i in range(len(path)-1):
                         plt.plot([path[i].x, path[i+1].x], [path[i].y, path[i+1].y], color = colorList[colorNumber])
                     #plt.savefig('images/' + str(colorNumber) +'_Path.png', dpi=300, bbox_inches='tight')
@@ -192,7 +192,7 @@ amoungOfTime = 0.1
 pauseDrone = False
 envName, startNode, goalNode, cloudList = Environment(pointStart=None, pointEnd=None).list7()
 
-#### Drone Hareketlerini izlemek için sahanı oluşturulması
+#### Creating a field to monitor drone movements
 
 '''fig = plt.figure(figsize=(10, 10))
 ax = fig.add_subplot(111, aspect='equal')
@@ -204,13 +204,13 @@ for obsticle in cloudList:
     square = patches.Rectangle((obsticle.pointEnd[0], obsticle.pointStart[1]), width=width, height= height, edgecolor='black', facecolor='black')
     ax.add_patch(square)
 '''
-#### Gösterim Tamamlandı. 
+#### The presentation is complete. 
 
 alg3 = IRRT(stepSize=15, iteration=30000, startPoint= startNode, targetPoint= goalNode, 
             obstacleList= cloudList, momentOfBreak=momentOfBreak, lowLimit=lowLimit, maxLimit=maxLimit)
 path, nodeCount3, completedTime3 = alg3.run()
 
-print('İşlem Zamanı: %f - Yol Uzunluğu: %f - Manevra Sayısı: %d'% (completedTime3, Utilize().calculatePathDistance(path=path), len(path)-1))
+print('Processing Time: %f - Road Length: %f - Number of Maneuvers: %d'% (completedTime3, Utilize().calculatePathDistance(path=path), len(path)-1))
 uavX, uavY = path[0].x, path[0].y
 alg3 = None
 if __name__ == "__main__":
