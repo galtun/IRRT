@@ -22,7 +22,7 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([-8, 35]), np.array([-22, 55]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([-33, 55]), np.array([-47, 75]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([-33, 85]), np.array([-47, 105]), 1, 0))
-        return '1NoluOrtam',Node(np.array([0, 0])), Node(np.array([-35, 80])), self.obsticleList
+        return 'Environment No. 1',Node(np.array([0, 0])), Node(np.array([-35, 80])), self.obsticleList
 
     def list2(self):
         self.obsticleList = []
@@ -60,7 +60,7 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([350, 155]), np.array([325, 230]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([350, 105]), np.array([325, 140]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([350, 0]), np.array([325, 60]), 1, 0))
-        return '3NoluOrtam',Node(np.array([4, 20])), Node(np.array([375, 205])), self.obsticleList
+        return 'Environment No. 3',Node(np.array([4, 20])), Node(np.array([375, 205])), self.obsticleList
     
     def list4(self):
         self.obsticleList = []
@@ -68,7 +68,7 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([195, 235]), np.array([100, 285]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([300, 250]), np.array([210, 300]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([300, 300]), np.array([100,400]), 1, 0))
-        return '4NoluOrtam',Node(np.array([50,50])), Node(np.array([350, 50])), self.obsticleList
+        return 'Environment No. 4',Node(np.array([50,50])), Node(np.array([350, 50])), self.obsticleList
 
     def list5(self):
         self.obsticleList = []
@@ -76,7 +76,7 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([125, 300]), np.array([100,400]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([250, 0]), np.array([225,100]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([250, 125]), np.array([225,400]), 1, 0))
-        return '2NoluOrtam',Node(np.array([50,50])), Node(np.array([350, 350])), self.obsticleList
+        return 'Environment No. 2',Node(np.array([50,50])), Node(np.array([350, 350])), self.obsticleList
     
     def list6(self):
         self.obsticleList = []
@@ -89,32 +89,32 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([90, 90]), np.array([10,130]), 1, 0))#7
         self.obsticleList.append(Obstacle(np.array([60, -90]), np.array([-20,-50]), 1, 0))#8
         self.obsticleList.append(Obstacle(np.array([-30, 170]), np.array([-150,230]), 1, 0))#9
-        return 'DinamikOrtam',Node(np.array([15,-20])), Node(np.array([-150, 150], 1, 0)), self.obsticleList
+        return 'Dynamic Environment',Node(np.array([15,-20])), Node(np.array([-150, 150], 1, 0)), self.obsticleList
     
     def list7(self):
         self.obsticleList= []
-        self.obsticleList.append(Obstacle(np.array([-40, 125]), np.array([-100, 175]), 1, 0))#Sabit Engel Sol
-        self.obsticleList.append(Obstacle(np.array([100, 125]), np.array([40,175]), 1, 0))#Sabit Engel Sağ
+        self.obsticleList.append(Obstacle(np.array([-40, 125]), np.array([-100, 175]), 1, 0))#Fixed Obstacle Left
+        self.obsticleList.append(Obstacle(np.array([100, 125]), np.array([40,175]), 1, 0))#Fixed Obstacle Right
 
-        self.obsticleList.append(Obstacle(np.array([60, 80]), np.array([40,100]), 1, 1))#Kare alt 1
-        self.obsticleList.append(Obstacle(np.array([10, 80]), np.array([-10,100]), 1, 1))#Kare alt 2
-        self.obsticleList.append(Obstacle(np.array([-40, 80]), np.array([-60,100]), 1, 1))#SKare alt 3
+        self.obsticleList.append(Obstacle(np.array([60, 80]), np.array([40,100]), 1, 1))#Square bottom 1
+        self.obsticleList.append(Obstacle(np.array([10, 80]), np.array([-10,100]), 1, 1))#Square bottom 2
+        self.obsticleList.append(Obstacle(np.array([-40, 80]), np.array([-60,100]), 1, 1))#Square bottom 3
 
-        self.obsticleList.append(Obstacle(np.array([75, 50]), 10, 0, 1))#Daire alt 1
-        self.obsticleList.append(Obstacle(np.array([25, 50]), 10, 0, 1))#Daire alt 2
-        self.obsticleList.append(Obstacle(np.array([-25, 50]), 10, 0, 1))#Daire alt 3
-        self.obsticleList.append(Obstacle(np.array([-75, 50]), 10, 0, 1))#Daire alt 4
+        self.obsticleList.append(Obstacle(np.array([75, 50]), 10, 0, 1))#Circle bottom 1
+        self.obsticleList.append(Obstacle(np.array([25, 50]), 10, 0, 1))#Circle bottom 2
+        self.obsticleList.append(Obstacle(np.array([-25, 50]), 10, 0, 1))#Circle bottom 3
+        self.obsticleList.append(Obstacle(np.array([-75, 50]), 10, 0, 1))#Circle bottom 4
 
-        self.obsticleList.append(Obstacle(np.array([60, 240]), np.array([40,260]), 1, 1))#Kare üst 1
-        self.obsticleList.append(Obstacle(np.array([10, 240]), np.array([-10,260]), 1, 1))#Kare üst 2
-        self.obsticleList.append(Obstacle(np.array([-40, 240]), np.array([-60,260]), 1, 1))#SKare üst 3
+        self.obsticleList.append(Obstacle(np.array([60, 240]), np.array([40,260]), 1, 1))#Square top 1
+        self.obsticleList.append(Obstacle(np.array([10, 240]), np.array([-10,260]), 1, 1))#Square top 2
+        self.obsticleList.append(Obstacle(np.array([-40, 240]), np.array([-60,260]), 1, 1))#SSquare top 3
 
-        self.obsticleList.append(Obstacle(np.array([75, 205]), 10, 0, 1))#Daire üst 1
-        self.obsticleList.append(Obstacle(np.array([25, 205]), 10, 0, 1))#Daire üst 2
-        self.obsticleList.append(Obstacle(np.array([-25, 205]), 10, 0, 1))#Daire üst 3
-        self.obsticleList.append(Obstacle(np.array([-75, 205]), 10, 0, 1))#Daire üst 4
+        self.obsticleList.append(Obstacle(np.array([75, 205]), 10, 0, 1))#Circle top 1
+        self.obsticleList.append(Obstacle(np.array([25, 205]), 10, 0, 1))#Circle top 2
+        self.obsticleList.append(Obstacle(np.array([-25, 205]), 10, 0, 1))#Circle top 3
+        self.obsticleList.append(Obstacle(np.array([-75, 205]), 10, 0, 1))#Circle top 4
 
-        return 'DinamikOrtam -2',Node(np.array([0,0])), Node(np.array([25, 300])), self.obsticleList
+        return 'Dynamic Environment -2',Node(np.array([0,0])), Node(np.array([25, 300])), self.obsticleList
 
     def list8(self):
         self.obsticleList = []
@@ -122,7 +122,7 @@ class Environment:
         self.obsticleList.append(Obstacle(np.array([3, 41]), np.array([-5,44]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([-2, 56]), np.array([-9,59]), 1, 0))
         self.obsticleList.append(Obstacle(np.array([-4, 41]), np.array([1,44]), 1, 0))
-        return '8NoluOrtam',Node(np.array([-6,48])), Node(np.array([20, 100])), self.obsticleList
+        return '8th Environment',Node(np.array([-6,48])), Node(np.array([20, 100])), self.obsticleList
 
     def showEviroment(self):
         name, startNode, goalNode, oList = Environment().list7()    
